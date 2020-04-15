@@ -9,17 +9,26 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const options = {
-    from: emailAddress,
-    to: '',
-    subject: '',
-    text: ''
+const sendMail = (event, context, callback) => {
+    const body = JSON.parse(event.body);
+
+    const options = {
+        from: emailAddress,
+        to: body.toAddress,
+        subject: body.subject,
+        text: body.body
+    };
+    
+    transporter.sendMail(options, (err, data) => {
+        if (err) {
+            callback(Error('Failed to send mail'));
+            return;
+        }
+    
+        callback(null, 200);
+    });
 };
 
-transporter.sendMail(options, (err, data) => {
-    if (err) {
-        console.log('Failed to send email');
-    }
-
-    console.log('Email has been sent.');
-});
+module.exports = {
+    sendMail
+};
