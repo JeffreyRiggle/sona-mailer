@@ -1,22 +1,21 @@
 const nodemailer = require('nodemailer');
-const emailAddress = process.env.USER_EMAIL;
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: emailAddress,
-        pass: process.env.USER_PASSWORD
-    }
-});
 
 const sendMail = (event, context, callback) => {
     const body = JSON.parse(event.body);
 
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: body.from,
+            pass: body.fromPass
+        }
+    });
+
     const options = {
-        from: emailAddress,
+        from: body.from,
         to: body.toAddress,
         subject: body.subject,
-        text: body.body
+        html: body.html
     };
     
     transporter.sendMail(options, (err, data) => {
@@ -26,6 +25,7 @@ const sendMail = (event, context, callback) => {
         }
     
         callback(null, 200);
+        transporter.close();
     });
 };
 
