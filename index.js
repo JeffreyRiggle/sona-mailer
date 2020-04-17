@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const sendMail = (event, context, callback) => {
-    const body = JSON.parse(event.body);
+    const body = event.body;
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
