@@ -6,8 +6,11 @@ const sendMail = (event, context, callback) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
+            type: 'oauth2',
             user: body.from,
-            pass: body.fromPass
+            clientId: body.clientId,
+            clientSecret: body.secret,
+            refreshToken: body.token
         }
     });
 
