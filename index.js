@@ -1,4 +1,5 @@
-const ses = require('aws-sdk').SES({region: 'us-east-1'});
+const { SES } = require('aws-sdk');
+const ses = new SES({region: 'us-east-1'});
 
 const sendMail = (event, context, callback) => {
     const body = event.body;
