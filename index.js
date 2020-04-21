@@ -1,34 +1,37 @@
-const nodemailer = require('nodemailer');
+const ses = require('aws-sdk').SES({region: 'us-east-1'});
 
 const sendMail = (event, context, callback) => {
     const body = event.body;
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            type: 'oauth2',
-            user: body.from,
-            clientId: body.clientId,
-            clientSecret: body.secret,
-            refreshToken: body.token
-        }
-    });
-
     const options = {
-        from: body.from,
-        to: body.toAddress,
-        subject: body.subject,
-        html: body.html
+        Destination: {
+            ToAddresses: [body.toAddress]
+        },
+        Message: {
+            Body: {
+                Html: {
+                    Charset: "UTF-8",
+                    Data: body.html
+                }
+            },
+            Subject: {
+                Charset: "UTF-8", 
+                Data: body.subject
+            }
+        },
+        Source: body.from
     };
     
-    transporter.sendMail(options, (err, data) => {
+    ses.sendEmail(options, (err, data) => {
+        callback(null, {err, data});
+
         if (err) {
-            callback(Error('Failed to send mail'));
+            console.log(err);
+            context.fail(err);
             return;
         }
     
-        callback(null, 200);
-        transporter.close();
+        context.succeed(event);
     });
 };
 
