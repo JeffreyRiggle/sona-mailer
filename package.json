@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/JeffreyRiggle/sona-mailer#readme",
   "dependencies": {
-    "aws-sdk": "^2.659.0"
+    "aws-sdk": "^2.814.0"
   }
 }
